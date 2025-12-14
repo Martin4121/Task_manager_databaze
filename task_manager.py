@@ -1,6 +1,8 @@
 import  mysql.connector
 
 def pripojeni_db(database_name="mydb"):
+    #Funkce pro připojení k databázi MySQL
+
     try:
         databaze = mysql.connector.connect(
             host="localhost",
@@ -18,6 +20,7 @@ def pripojeni_db(database_name="mydb"):
         return None
 
 def vytvoreni_tabulky(db_connection):
+    #Funkce pro vytvoření tabulky 'ukoly', pokud ještě neexistuje
     cursor = db_connection.cursor()
     cursor.execute("SHOW TABLES LIKE 'ukoly'")
     vysledek = cursor.fetchone()
@@ -40,6 +43,7 @@ def vytvoreni_tabulky(db_connection):
     cursor.close()
 
 def pridat_ukol():
+    #Funkce pro přidání nového úkolu do tabulky 'ukoly'
     while True:
         nazev_ukolu = str(input("Zadej nazev ukolu: ")).strip()
         popis_ukolu = str(input("Zadej popis ukolu: ")).strip()
@@ -64,6 +68,7 @@ def pridat_ukol():
         print(f"\n[CHYBA] Nepodařilo se uložit úkol: {e}")
 
 def zobrazit_ukoly(db_connection):
+    #Funkce pro zobrazení všech úkolů v tabulce 'ukoly'
     nalezeno_ukolu = False
 
     print("\n--- SEZNAM VŠECH ÚKOLŮ ---")
@@ -104,6 +109,7 @@ def zobrazit_ukoly(db_connection):
 
 
 def aktualizovat_ukoly():
+    #Funkce pro aktualizaci stavu úkolu v tabulce 'ukoly'
     print("\n--- SEZNAM VŠECH ÚKOLŮ ---")
     try:
         cursor = db_connection.cursor()
@@ -134,6 +140,7 @@ def aktualizovat_ukoly():
         db_connection.rollback()
 
 def odstranit_ukoly():
+    #Funkce pro odstranění úkolu z tabulky 'ukoly'
     print("\n--- SEZNAM VŠECH ÚKOLŮ ---")
 
     try:
@@ -175,16 +182,19 @@ def odstranit_ukoly():
         db_connection.rollback()
 
 def hlavni_menu():
+    #Hlavní menu pro správu úkolů a výběr akcí
     while True:
-        volba = int(input(  " \n"
-                "Správce úkolů - Hlavní menu\n"
-                "1. Přidat úkol\n"
-                "2. Zobrazit úkoly\n"
-                "3. Aktualizovat úkol\n"
-                "4. Odstranit úkol\n"
-                "5. Ukončit program\n"
-                f"Vyberte možnost (1-5): "
-                ))
+    try:
+        volba = int(input(
+            "\n"
+            "Správce úkolů - Hlavní menu\n"
+            "1. Přidat úkol\n"
+            "2. Zobrazit úkoly\n"
+            "3. Aktualizovat úkol\n"
+            "4. Odstranit úkol\n"
+            "5. Ukončit program\n"
+            "Vyberte možnost (1-5): "
+        ))
 
         match volba:
             case 1:
@@ -202,6 +212,9 @@ def hlavni_menu():
             case _:
                 print("Neplatná volba.")
 
+    except ValueError:
+        print("Musíš zadat číslo.")
+   
 if __name__ == "__main__":
     db_connection = pripojeni_db() 
     
